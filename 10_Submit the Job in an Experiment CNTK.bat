@@ -1,0 +1,2 @@
+az batchai job create -c nc6 -n cognitive_charades_experiment_cntk -g cognitive.charades.batchai -w cognitive_charades_workspace -e cognitive_charades_experiment -f 08_CNTKJob.json --storage-account-name cognitivecharades001 > JobResults.txt
+pause

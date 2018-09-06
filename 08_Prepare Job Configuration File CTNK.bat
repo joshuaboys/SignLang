@@ -1,0 +1,1 @@
+az storage file upload -s scripts --source 08_CNTKJob.json --account-name cognitivecharades001

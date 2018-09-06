@@ -1,0 +1,1 @@
+az storage share create -n videos --account-name cognitivecharades001 

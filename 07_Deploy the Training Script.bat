@@ -1,0 +1,1 @@
+az storage file upload-batch -s scripts -d scripts --account-name cognitivecharades001 

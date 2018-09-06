@@ -1,0 +1,1 @@
+az storage share create -n scripts --account-name cognitivecharades001 

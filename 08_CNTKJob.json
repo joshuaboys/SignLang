@@ -1,0 +1,31 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
+    "properties": {
+        "nodeCount": 1,
+        "cntkSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/master.py",
+            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/video $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/model"
+        },
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts",
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://cognitivecharades001.file.core.windows.net/videos",
+                    "relativeMountPath": "videos"
+                },
+                {
+                    "azureFileUrl": "https://cognitivecharades001.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
+        },
+        "jobPreparation": {
+          "commandLine": "pip install keras tqdm"
+        },
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "microsoft/cntk:2.5.1-gpu-python2.7-cuda9.0-cudnn7.0"
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+az batchai job delete -g cognitive.charades.batchai -w cognitive_charades_workspace -e cognitive_charades_experiment -n cognitive_charades_experiment_cntk --no-wait

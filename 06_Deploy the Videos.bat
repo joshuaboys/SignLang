@@ -1,0 +1,1 @@
+az storage file upload-batch -s videos -d videos --account-name cognitivecharades001 

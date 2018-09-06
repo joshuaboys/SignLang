@@ -1,0 +1,2 @@
+az login
+pause
