@@ -4,7 +4,7 @@
         "nodeCount": 1,
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/master.py",
-            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/video $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/model"
+            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/videos $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts",
         "mountVolumes": {
@@ -20,7 +20,7 @@
             ]
         },
         "jobPreparation": {
-          "commandLine": "pip install keras tqdm"
+          "commandLine": "apt update; apt install ffmpeg -y; pip install keras tqdm ffmpeg-python"
         },
         "containerSettings": {
             "imageSourceRegistry": {

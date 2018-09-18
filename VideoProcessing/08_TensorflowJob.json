@@ -4,9 +4,9 @@
         "nodeCount": 1,
         "tensorFlowSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/master.py",
-            "masterCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/video $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/model",
-            "workerCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/video $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/model",
-            "parameterServerCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/video $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/model"
+            "masterCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/videos $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts",
+            "workerCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/videos $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts",
+            "parameterServerCommandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/videos $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts",
         "mountVolumes": {
@@ -22,7 +22,7 @@
             ]
         },
         "jobPreparation": {
-          "commandLine": "pip install keras tqdm"
+          "commandLine": "apt update; apt install ffmpeg -y; pip install keras tqdm ffmpeg-python"
         },
         "containerSettings": {
             "imageSourceRegistry": {

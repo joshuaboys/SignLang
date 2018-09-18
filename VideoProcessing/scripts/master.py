@@ -5,7 +5,8 @@ import os.path
 import numpy as np
 import time
 import sys
-from subprocess import call
+import ffmpeg
+from subprocess import call, Popen
 from models import ResearchModels
 from data import DataSet
 from extractor import Extractor
@@ -37,19 +38,21 @@ def extract_files():
         # Get the parts of the file.
         video_parts = get_video_parts(video_path)
         classname, filename_no_ext, filename = video_parts
+        print("Video Parts:" + model_path + "|"+ classname +"|"+ filename_no_ext +"|"+ filename)
 		
         #create class dir if not exists
-        if not os.path.exists(classname):
-            os.makedirs(classname)
+        if not os.path.exists(os.path.join(model_path, classname)):
+            os.makedirs(os.path.join(model_path, classname))
 			
         # Only extract if we haven't done it yet. Otherwise, just get
         # the info.
         if not check_already_extracted(video_parts):
-            print("extract:" + video_path.name)
-            dest = os.path.join(classname, filename_no_ext + '-%04d.jpg')
-			
-			#Split videa into frames
-            call(["ffmpeg", "-i", src, dest])
+            dest = os.path.join(model_path, classname, filename_no_ext + '-%04d.jpg')
+
+            print("extract:" + video_path + " | " + " dest: " + dest)
+			#Split video into frames
+            ffmpeg.input(video_path).output(dest).run()
+            #os.system("wine" + model_path+'/ffmpeg.exe -i ' + video_path + ' ' + dest)
 
         # Now get how many frames it is.
         nb_frames = get_nb_frames_for_video(video_parts)
@@ -76,7 +79,7 @@ def get_nb_frames_for_video(video_parts):
 def get_video_parts(video_path):
     """Given a full path to a video, return its parts."""
 
-    parts = video_path.name.split('_')
+    parts = video_path.split("/")[-1].split('_')
     classname = parts[0]
     filename = parts[1]
     filename_no_ext = filename.split('.')[0]
@@ -86,7 +89,7 @@ def get_video_parts(video_path):
 def check_already_extracted(video_parts):
     """Check to see if we created the -0001 frame of this file."""
     classname, filename_no_ext, _ = video_parts
-    return bool(os.path.exists(os.path.join(classname, filename_no_ext + '-0001.jpg')))
+    return bool(os.path.exists(os.path.join(model_path, classname, filename_no_ext + '-0001.jpg')))
 
 def extract_features():
     # Set defaults.
@@ -105,7 +108,7 @@ def extract_features():
     for video in data.data:
     
     	# Get the path to the sequence for this video.
-    	path = os.path.join('data','sequences', video[1] + '-' + str(seq_length) + '-features')  # numpy will auto-append .npy
+    	path = os.path.join(model_path, 'data','sequences', video[1] + '-' + str(seq_length) + '-features')  # numpy will auto-append .npy
     
     	# Check if we already have it.
     	if os.path.isfile(path + '.npy'):
@@ -134,26 +137,26 @@ def extract_features():
 def train(data_type, seq_length, model, saved_model=None,
           class_limit=None, image_shape=None,
           load_to_memory=False, batch_size=10, nb_epoch=100): #batch_size=32
-    model_path = os.path.join('data', 'checkpoints')
+    _model_path = os.path.join(model_path, 'data', 'checkpoints')
     #create class dir if not exists
-    if not os.path.exists(model_path):
-            os.makedirs(model_path)
+    if not os.path.exists(_model_path):
+            os.makedirs(_model_path)
 			
     # Helper: Save the model.
     checkpointer = ModelCheckpoint(
-        filepath=os.path.join(model_path, model + '-' + data_type + '.{epoch:03d}-{val_loss:.3f}.hdf5'),
+        filepath=os.path.join(_model_path, model + '-' + data_type + '.{epoch:03d}-{val_loss:.3f}.hdf5'),
         verbose=1,
         save_best_only=True)
 
     # Helper: TensorBoard
-    tb = TensorBoard(log_dir=os.path.join('data', 'logs', model))
+    tb = TensorBoard(log_dir=os.path.join(model_path,'data', 'logs', model))
 
     # Helper: Stop when we stop learning.
     early_stopper = EarlyStopping(patience=50)
 
     # Helper: Save results.
     timestamp = time.time()
-    csv_logger = CSVLogger(os.path.join('data', 'logs', model + '-' + 'training-' + str(timestamp) + '.log'))
+    csv_logger = CSVLogger(os.path.join(model_path,'data', 'logs', model + '-' + 'training-' + str(timestamp) + '.log'))
 
     # Get the data and process it.
     if image_shape is None:
